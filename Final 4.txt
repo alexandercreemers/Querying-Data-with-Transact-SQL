@@ -14,6 +14,14 @@ on o.orderid = od.orderid
 group by rollup(Country)
 
 4.
+SELECT 
+Country, ContactTitle, Count(ContactTitle)AS 'Count',
+CASE 
+WHEN GROUPING_ID(Country,ContactTitle) = 0 THEN ''
+WHEN GROUPING_ID(Country,ContactTitle) = 1 THEN 'Subtotal for ' +Country
+END AS Legend
+FROM Customers
+GROUP BY ROLLUP(Country,ContactTitle);
 
 
 5.
@@ -40,4 +48,13 @@ SET regiondescription = upper(regiondescription)
 select * from region
 
 8.
+DECLARE @region NVARCHAR(25) = 'Space';
+IF NOT EXISTS (SELECT * FROM region WHERE RegionDescription = @region)
+BEGIN
+THROW 50001, 'Error!', 0
+END
+ELSE 
+BEGIN 
+SELECT * FROM region WHERE RegionDescription = @region
+END;
 
